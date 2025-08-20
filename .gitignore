@@ -2,6 +2,7 @@
 **/venv/
 .vscode/
 .devcontainer/
+datasets/bello2023/trading_records/SKY_2021-02-13_17h00.csv
 
 # History files
 .Rhistory
