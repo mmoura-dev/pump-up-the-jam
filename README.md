@@ -9,4 +9,7 @@ The directory `datasets` contains labeled pump-and-dump data from other works wh
 
 > The [Binance API has changed in 2025-03-03 08:00](https://www.binance.com/en/support/announcement/detail/f04e986e02464015b3e85d5ef76cbb2a) (UTC) to not include historical market data before 2025-03-01 00:00 (UTC) but some data may still be retried in: https://data.binance.vision/?prefix=data/futures/um/daily/trades/
 
-> Meaning of columns: `is_buyer_maker` is True, that means the order was filled by seller market selling into a maker and if it's False, the order was filled by a buyer market buying into a maker; `is_best_match` means that the price of the buyer was matched with a seller [source](https://github.com/sammchardy/python-binance/issues/374).
+### Glossary
+- `isBuyerMaker`: Field in the Response JSON that indicates if the Buy side (the Buyer) was also the market maker (the Maker).
+- `isBestMatch`: Field in the Response JSON that determines if the price of the trade was the best available on the exchange.
+Source: https://developers.binance.com/docs/binance-spot-api-docs/faqs/spot_glossary

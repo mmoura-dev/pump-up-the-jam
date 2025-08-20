@@ -62,10 +62,12 @@ def transform_df(symbol: str, merged_df: pd.DataFrame) -> pd.DataFrame:
                         'isBuyerMaker': 'is_buyer_maker',
                         'isBestMatch': 'is_best_match'}
     result_df = merged_df.rename(columns=column_names_map)
+    result_df['symbol'] = symbol + '/BTC'
     result_df['datetime'] = pd.to_datetime(result_df['timestamp'], unit='ms').map(
         lambda x: datetime.strftime(x, '%Y-%m-%dT%H:%M:%S.%fZ'))
-    result_df['symbol'] = symbol + '/BTC'
-    result_df['side'] = np.where(result_df['is_buyer_maker'], 'buy', 'sell')
+    result_df['side'] = np.where(result_df['is_buyer_maker'], 'sell', 'buy')
+    result_df['is_buyer_maker'] = result_df['is_buyer_maker'].astype(str).str.lower()
+    result_df['is_best_match'] = result_df['is_best_match'].astype(str).str.lower()
 
     return result_df[['symbol', 'timestamp', 'datetime', 'side', 'price', 'amount', 'btc_volume', 'trade_id', 'is_buyer_maker', 'is_best_match']]
 
