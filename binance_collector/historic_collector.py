@@ -1,5 +1,6 @@
 import glob
 import os
+import pprint
 import tempfile
 from typing import List
 import zipfile
@@ -28,6 +29,7 @@ def get_historic_binance_dataset(dataset_name: str, days_before: int = 12, days_
     dataset = dataset[dataset['exchange'] == 'binance']
     dataset.drop(columns=['exchange'], inplace=True)
 
+    error_tuples = []
     for _, symbol, pump_date_str, pump_hour_str in dataset.itertuples():
         pump_date = datetime.strptime(pump_date_str, '%Y-%m-%d')
         start_date = (pump_date - timedelta(days=days_before)
@@ -36,13 +38,19 @@ def get_historic_binance_dataset(dataset_name: str, days_before: int = 12, days_
                     ).strftime("%Y-%m-%d")
 
         with tempfile.TemporaryDirectory() as tmp_path:
-            zip_files_path = download_daily_trades('spot', [symbol + 'BTC'], 1, get_arg_dates(),
-                                                   start_date, end_date, tmp_path, 0)
-            csv_files = extract_zip_files(tmp_path, zip_files_path)
-            merged_df = merge_csv_files(csv_files)
-            merged_df = transform_df(symbol, merged_df)
-            write_output_csv(dataset_name, symbol,
-                             pump_date_str, pump_hour_str, merged_df)
+            try:
+                zip_files_path = download_daily_trades('spot', [symbol + 'BTC'], 1, get_arg_dates(),
+                                                    start_date, end_date, tmp_path, 0)
+                csv_files = extract_zip_files(tmp_path, zip_files_path)
+                merged_df = merge_csv_files(csv_files)
+                merged_df = transform_df(symbol, merged_df)
+                write_output_csv(dataset_name, symbol,
+                                pump_date_str, pump_hour_str, merged_df)
+            except Exception:
+                error_tuples.append((symbol, pump_date_str, pump_hour_str))
+                continue
+        
+    pprint.pprint(error_tuples)
 
 
 def write_output_csv(dataset_name, symbol, pump_date_str, pump_hour_str, combined_df):
