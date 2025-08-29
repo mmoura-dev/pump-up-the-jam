@@ -48,8 +48,6 @@ read_trading_records_csv <- function(file_name) {
   )
 
   df$timestamp <- bit64::as.integer64(df$timestamp)
-  # df$timestamp <- as.POSIXct(df$timestamp / 1000, origin = "1970-01-01", tz = "UTC")
-
   event_info$df <- df
   return(event_info)
 }
