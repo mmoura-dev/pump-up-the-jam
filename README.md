@@ -1,6 +1,8 @@
 # pump-up-the-jam
 Online detection of pump-and-dump schemes in cryptocurrency exchanges.
 
+> Run tests: `testthat::test_dir("tests")`
+
 ## Used Datasets
 The directory `datasets` contains labeled pump-and-dump data from other works which are listed below:
 - `lamorgia`: Contains the raw data from Binance pump-and-dump events obtained using the Download script of the repository: https://github.com/SystemsLab-Sapienza/pump-and-dump-dataset

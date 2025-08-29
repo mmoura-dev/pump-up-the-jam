@@ -2,12 +2,20 @@ library(readr)
 
 
 parse_filename_info <- function(file_name) {
+  
+  if (!is.character(file_name) || !file.exists(file_name)) {
+    stop("`file_name` must be a string path to a CSV file.")
+  }
+  
   base_name <- basename(file_name)
   no_ext <- sub("\\.csv$", "", base_name)
   parts <- strsplit(no_ext, "_")[[1]]
 
-  if (length(parts) != 3) {
-    stop("Filename must follow format: <token>_<%Y-%m-%d>_<%Hh%M>.csv")
+  if (length(parts) != 3 ||
+      !grepl("^[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$", parts[2]) ||
+      !grepl("^([0-1][0-9])|(2[0-3])h[0-5][0-9]$", parts[3])
+     ) {
+    stop("File name must follow format: <token>_%Y-%m-%d_%Hh%M.csv")
   }
 
   event_time_str <- sub("h", ":", parts[3])
@@ -15,7 +23,8 @@ parse_filename_info <- function(file_name) {
     token_name = parts[1],
     event_date_str = parts[2],
     event_time_str = event_time_str,
-    event_datetime = strptime(paste0(parts[2],"T",event_time_str,"Z"), format = "%Y-%m-%dT%H:%M", tz = "UTC")
+    event_datetime = strptime(paste0(parts[2], "T", event_time_str,"Z"),
+                              format = "%Y-%m-%dT%H:%M", tz = "UTC")
   ))
 }
 
